@@ -1,0 +1,4 @@
+/* atoms v0.03.06 - 2014/3/7
+   http://atomic.tapquo.com
+   Copyright (c) 2014 Tapquo S.L. - Licensed  */
+(function(){var _ref,__hasProp={}.hasOwnProperty,__extends=function(child,parent){function ctor(){this.constructor=child}for(var key in parent)__hasProp.call(parent,key)&&(child[key]=parent[key]);return ctor.prototype=parent.prototype,child.prototype=new ctor,child.__super__=parent.prototype,child};Atoms.Organism.CarouselSection=function(_super){function CarouselSection(){return _ref=CarouselSection.__super__.constructor.apply(this,arguments)}return __extends(CarouselSection,_super),CarouselSection}(Atoms.Organism.Section)}).call(this);
