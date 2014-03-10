@@ -10,7 +10,7 @@ TRANSITION =
 
 
 TRIGGER_PX = 120
-AUTO_INTERVAL = 2000
+AUTO_INTERVAL = 3000
 RESISTANCE = 4
 
 
@@ -37,7 +37,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       .bind("touchend", @_onEnd)
       .bind("webkitTransitionEnd", @_onTransitionEnd)
 
-    if @attributes.auto is "true"
+    if @attributes.auto
       @auto_interval = setTimeout @next, AUTO_INTERVAL
 
   initialize: ->
@@ -55,6 +55,11 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     if @_canGo(true)
       @_go(true)
       @blocked = true
+    else if @attributes.auto
+      @children[0].el.attr(ATTRIBUTES.POSITION, "next")
+      @children[0].el.attr(ATTRIBUTES.TRANSITION, "current")
+      @children[@num_childs - 1].el.attr(ATTRIBUTES.TRANSITION, "next")
+      @current_index = 0
 
   previous: =>
     if @_canGo(false)
@@ -137,7 +142,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     clearTimeout(@auto_interval)
     if transition is TRANSITION.CURRENT or (transition is TRANSITION.RESTORE and position is TRANSITION.CURRENT)
       @blocked = false
-      if @attributes.auto is "true"
+      if @attributes.auto
         setTimeout (=> @auto_interval = setTimeout(@next, AUTO_INTERVAL)), 100
 
     child.removeAttribute(ATTRIBUTES.TRANSITION)
