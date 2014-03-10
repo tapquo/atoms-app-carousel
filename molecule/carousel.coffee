@@ -6,9 +6,12 @@ TRANSITION =
   PREVIOUS  : "previous"
   CURRENT   : "current"
   NEXT      : "next"
+  RESTORE   : "restoring"
+
 
 TRIGGER_PX = 120
-RESISTANCE = 1 / 4
+AUTO_INTERVAL = 2000
+RESISTANCE = 4
 
 
 _removeTransform = (el) ->
@@ -34,6 +37,9 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       .bind("touchend", @_onEnd)
       .bind("webkitTransitionEnd", @_onTransitionEnd)
 
+    if @attributes.auto is "true"
+      @auto_interval = setTimeout @next, AUTO_INTERVAL
+
   initialize: ->
     @index.reset()
     @current_index = 0
@@ -45,12 +51,12 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
         else if i is 1 then child.el.attr(ATTRIBUTES.POSITION, TRANSITION.NEXT)
         @index.add(i, i is 0)
 
-  next: ->
+  next: =>
     if @_canGo(true)
       @_go(true)
       @blocked = true
 
-  previous: ->
+  previous: =>
     if @_canGo(false)
       @_go(false)
       @blocked = true
@@ -63,6 +69,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     if @swiped isnt null
       @swiped = evt.quoData.delta.x
       do @_handleSwipe
+      clearTimeout(@auto_interval)
     evt.originalEvent.preventDefault()
     evt.stopPropagation()
 
@@ -79,9 +86,9 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
   _removeTransforms: (animate) ->
     _removeTransform(child.el[0]) for child in @children
     if animate
-      @children[@current_index].el.attr(ATTRIBUTES.TRANSITION, "restoring")
+      @children[@current_index].el.attr(ATTRIBUTES.TRANSITION, TRANSITION.RESTORE)
       other_index = if @swiped > 0 then @current_index-1 else @current_index+1
-      @children[other_index]?.el.attr(ATTRIBUTES.TRANSITION, "restoring")
+      @children[other_index]?.el.attr(ATTRIBUTES.TRANSITION, TRANSITION.RESTORE)
 
   _resetPositions: ->
     child.el.removeAttr(ATTRIBUTES.POSITION) for child in @children
@@ -89,7 +96,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
   _handleSwipe: ->
     target = @children[@current_index].el
     possible = @_canGo(@swiped < 0)
-    toSwipe = if possible then @swiped else @swiped * RESISTANCE
+    toSwipe = if possible then @swiped else @swiped / (RESISTANCE + 1)
     target.vendor "transform", "translateX(#{toSwipe}px)"
     if possible
       otherTarget = Atoms.$(target[0][if @swiped > 0 then "previousSibling" else "nextSibling"])
@@ -117,7 +124,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
   _onTransitionEnd: (e) =>
     child = e.target
     transition = child.getAttribute(ATTRIBUTES.TRANSITION)
-
+    position = child.getAttribute(ATTRIBUTES.POSITION)
     if transition is TRANSITION.CURRENT
       do @_resetPositions
       @index.setActive @current_index
@@ -126,10 +133,12 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       if child.nextSibling?
         if child.nextSibling.className != "index"
           child.nextSibling.setAttribute(ATTRIBUTES.POSITION, TRANSITION.NEXT)
-      @blocked = false
 
-    if transition is "restoring" and child.getAttribute(ATTRIBUTES.POSITION) is TRANSITION.CURRENT
+    clearTimeout(@auto_interval)
+    if transition is TRANSITION.CURRENT or (transition is TRANSITION.RESTORE and position is TRANSITION.CURRENT)
       @blocked = false
+      if @attributes.auto is "true"
+        setTimeout (=> @auto_interval = setTimeout(@next, AUTO_INTERVAL)), 100
 
     child.removeAttribute(ATTRIBUTES.TRANSITION)
 
