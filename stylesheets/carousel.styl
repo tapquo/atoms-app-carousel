@@ -1,0 +1,68 @@
+@import "../../../components/CSSmethods/vendor.styl"
+
+TRANSITION_FUNCTION = ease-out
+TRANSITION_TIME     = 300ms
+
+
+[data-molecule="carousel"]
+
+  vendor(transform, translate3d(0, 0, 0))
+  position: absolute !important
+  margin: 0 !important
+  padding: 0 !important
+  width: 100% !important
+  height: 200px !important
+
+  & > [data-atom="carouselindex"].index
+    position: absolute !important
+    z-index: 999 !important
+    width: 100% !important
+    text-align: center !important
+    bottom: 0 !important
+
+    & > span
+      font-size: 3em !important
+      font-weight: bold !important
+      font-family: serif !important
+      letter-spacing: 0px !important
+      color: white !important
+      opacity: 0.5 !important
+      &.active
+        opacity: 1 !important
+
+  & > *:not(.index)
+    margin: 0 !important
+    padding: 0 !important
+    position: absolute !important
+    width: 100% !important
+    height: 100% !important
+
+
+    &:not([data-carousel-position]):not([data-carousel-transition])
+      visibility: hidden !important
+
+    &[data-carousel-transition]
+      vendor(transition, all TRANSITION_TIME TRANSITION_FUNCTION !important)
+
+    &[data-carousel-transition="restoring"]
+      vendor(transform, translateX(0) !important)
+
+    &[data-carousel-position="previous"]
+      left: -100% !important
+      &[data-carousel-transition="current"]
+        vendor(transform, translateX(100%) !important)
+
+    &[data-carousel-position="current"]
+      left: 0 !important
+      &[data-carousel-transition="next"]
+        vendor(transform, translateX(-100%) !important)
+      &[data-carousel-transition="previous"]
+        vendor(transform, translateX(100%) !important)
+
+    &[data-carousel-position="next"]
+      left: 100% !important
+      &[data-carousel-transition="current"]
+        vendor(transform, translateX(-100%) !important)
+
+
+
