@@ -14,42 +14,35 @@ AUTO_INTERVAL = 3000
 RESISTANCE = 4
 
 
-_removeTransform = (el) ->
-  el.style.webkitTransform = ""
-  el.style.MozTransform = ""
-  el.style.transform = ""
-
-
 class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
+
+  @template = """
+    <div {{#if.style}}class="{{style}}"{{/if.style}}></div>
+  """
 
   @base = "Form"
 
-  @template = """
-    <div id="{{id}}" {{#if.style}}class="{{style}}" {{/if.style}}></div>
-  """
-
   constructor: ->
     super
-    @index = @appendChild "Atom", "CarouselIndex", {}
+    @appendChild "App.Extension.Carousel.Index", id: "index" if @attributes.index
+    @auto_interval = setTimeout @next, AUTO_INTERVAL if @attributes.auto
+
     do @initialize
     @el.bind("touchstart", @_onStart)
       .bind("swiping", @_onSwiping)
       .bind("touchend", @_onEnd)
       .bind("webkitTransitionEnd", @_onTransitionEnd)
 
-    if @attributes.auto
-      @auto_interval = setTimeout @next, AUTO_INTERVAL
-
   initialize: ->
-    @index.reset()
+    @index?.reset()
     @current_index = 0
     @num_childs = @children.length - 1
     @blocked = false
     for child, i in @children
-      if not child.el.hasClass("index")
+      if not child.el.attr("[data-atom=index]")
         if i is 0 then child.el.attr(ATTRIBUTES.POSITION, TRANSITION.CURRENT)
         else if i is 1 then child.el.attr(ATTRIBUTES.POSITION, TRANSITION.NEXT)
-        @index.add(i, i is 0)
+        @index?.add(i, i is 0)
 
   next: =>
     if @_canGo(true)
@@ -132,7 +125,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     position = child.getAttribute(ATTRIBUTES.POSITION)
     if transition is TRANSITION.CURRENT
       do @_resetPositions
-      @index.setActive @current_index
+      @index?.setActive @current_index
       child.setAttribute(ATTRIBUTES.POSITION, TRANSITION.CURRENT)
       child.previousSibling?.setAttribute(ATTRIBUTES.POSITION, TRANSITION.PREVIOUS)
       if child.nextSibling?
@@ -148,3 +141,8 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     child.removeAttribute(ATTRIBUTES.TRANSITION)
 
 
+
+_removeTransform = (el) ->
+  el.style.webkitTransform = ""
+  el.style.MozTransform = ""
+  el.style.transform = ""
