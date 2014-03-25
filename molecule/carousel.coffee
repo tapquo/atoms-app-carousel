@@ -24,7 +24,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
 
   constructor: ->
     super
-    @index = new Atoms.App.Extension.Carousel.Index container: @el if @attributes.index
+    @index = new Atoms.App.Extension.Carousel.Index container: @el
     @children.push @index
     @auto_interval = setTimeout @next, AUTO_INTERVAL if @attributes.auto
     do @initialize
