@@ -16,17 +16,17 @@ RESISTANCE = 4
 
 class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
 
-  @template = """
-    <div {{#if.style}}class="{{style}}"{{/if.style}}></div>
-  """
+  @template = """<div {{#if.style}}class="{{style}}"{{/if.style}}></div>"""
+
+  @available = ["Atom.Figure", "Atom.Image", "Atom.Video", "Atom.Audio"]
 
   @base = "Form"
 
   constructor: ->
     super
-    @appendChild "App.Extension.Carousel.Index", id: "index" if @attributes.index
+    @index = new Atoms.App.Extension.Carousel.Index container: @el if @attributes.index
+    @children.push @index
     @auto_interval = setTimeout @next, AUTO_INTERVAL if @attributes.auto
-
     do @initialize
     @el.bind("touchstart", @_onStart)
       .bind("swiping", @_onSwiping)
@@ -38,11 +38,10 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     @current_index = 0
     @num_childs = @children.length - 1
     @blocked = false
-    for child, i in @children
-      if not child.el.attr("[data-atom=index]")
-        if i is 0 then child.el.attr(ATTRIBUTES.POSITION, TRANSITION.CURRENT)
-        else if i is 1 then child.el.attr(ATTRIBUTES.POSITION, TRANSITION.NEXT)
-        @index?.add(i, i is 0)
+    for child, index in @children when child.constructor.base isnt "index"
+      transition = if index is 0 then TRANSITION.CURRENT else TRANSITION.NEXT
+      child.el.attr ATTRIBUTES.POSITION, transition
+      @index?.add index, index is 0
 
   next: =>
     if @_canGo(true)
@@ -139,8 +138,6 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
         setTimeout (=> @auto_interval = setTimeout(@next, AUTO_INTERVAL)), 100
 
     child.removeAttribute(ATTRIBUTES.TRANSITION)
-
-
 
 _removeTransform = (el) ->
   el.style.webkitTransform = ""

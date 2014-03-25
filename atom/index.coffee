@@ -4,6 +4,8 @@ class Atoms.App.Extension.Carousel.Index extends Atoms.Class.Atom
 
   @template: "<div></div>"
 
+  @base: "index"
+
   add: (index, active=false) ->
     child = Atoms.$ """<span data-index="#{index + 1}"></span>"""
     if active then child.addClass "active"
