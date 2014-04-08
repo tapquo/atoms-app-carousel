@@ -25,7 +25,8 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
   constructor: ->
     super
     @index = new Atoms.App.Extension.Carousel.Index container: @el
-    @children.push @index
+    @children.unshift @index
+
     @auto_interval = setTimeout @next, AUTO_INTERVAL if @attributes.auto
     do @initialize
     @el.bind("touchstart", @_onStart)
@@ -34,24 +35,25 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       .bind("webkitTransitionEnd", @_onTransitionEnd)
 
   initialize: ->
+    console.log "children", @children.length ,@children
     @index?.reset()
-    @current_index = 0
+    @current_index = 1
     @num_childs = @children.length - 1
     @blocked = false
     for child, index in @children when child.constructor.base isnt "index"
-      transition = if index is 0 then TRANSITION.CURRENT else TRANSITION.NEXT
+      transition = if index is 1 then TRANSITION.CURRENT else TRANSITION.NEXT
       child.el.attr ATTRIBUTES.POSITION, transition
-      @index?.add index, index is 0
+      @index?.add index, index is 1
 
   next: =>
     if @_canGo(true)
       @_go(true)
       @blocked = true
     else if @attributes.auto
-      @children[0].el.attr(ATTRIBUTES.POSITION, "next")
-      @children[0].el.attr(ATTRIBUTES.TRANSITION, "current")
-      @children[@num_childs - 1].el.attr(ATTRIBUTES.TRANSITION, "next")
-      @current_index = 0
+      @children[1].el.attr(ATTRIBUTES.POSITION, "next")
+      @children[1].el.attr(ATTRIBUTES.TRANSITION, "current")
+      @children[@num_childs].el.attr(ATTRIBUTES.TRANSITION, "next")
+      @current_index = 1
 
   previous: =>
     if @_canGo(false)
@@ -66,7 +68,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     if @swiped isnt null
       @swiped = evt.quoData.delta.x
       do @_handleSwipe
-      clearTimeout(@auto_interval)
+      clearTimeout @auto_interval if @attributes.auto
     evt.originalEvent.preventDefault()
     evt.stopPropagation()
 
@@ -100,7 +102,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       otherTarget.vendor "transform", "translateX(#{toSwipe}px)"
 
   _canGo: (is_next=true) ->
-    !((@current_index is 0 and !is_next) or (@current_index is @num_childs - 1 and is_next))
+    !((@current_index is 1 and !is_next) or (@current_index is @num_childs and is_next))
 
   _go: (is_next) ->
     if is_next
@@ -131,7 +133,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
         if child.nextSibling.className != "index"
           child.nextSibling.setAttribute(ATTRIBUTES.POSITION, TRANSITION.NEXT)
 
-    clearTimeout(@auto_interval)
+    clearTimeout @auto_interval if @attributes.auto
     if transition is TRANSITION.CURRENT or (transition is TRANSITION.RESTORE and position is TRANSITION.CURRENT)
       @blocked = false
       if @attributes.auto
