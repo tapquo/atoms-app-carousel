@@ -35,7 +35,6 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       .bind("webkitTransitionEnd", @_onTransitionEnd)
 
   initialize: ->
-    console.log "children", @children.length ,@children
     @index?.reset()
     @current_index = 1
     @num_childs = @children.length - 1
