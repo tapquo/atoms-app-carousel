@@ -17,7 +17,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
 
   @template : """<div {{#if.style}}class="{{style}}"{{/if.style}}></div>"""
 
-  @available: ["Atom.Figure", "Atom.Image", "Atom.Video", "Atom.Audio"]
+  @available: ["Atom.Figure", "Atom.Image", "Atom.Video"]
 
   @base     : "Form"
 
