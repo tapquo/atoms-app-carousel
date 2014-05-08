@@ -3,20 +3,20 @@
 TRANSITION_FUNCTION = ease-out
 TRANSITION_TIME     = 300ms
 
-[data-molecule="carousel"]
+[data-molecule=form][data-extend=carousel]
   margin: 0
   padding: 0
   width: 100%
 
+  &.tiny
+    height: 6rem
+  &.small
+    height: 8rem
   &.big
     position: absolute
     height: 100%
-  &.small
-    height: 128px
-  &.tiny
-    height: 96px
   &:not(.big):not(.small):not(.tiny)
-    height: 192px
+    height: 12rem
 
   & > [data-atom="index"]
     z-index: 2
