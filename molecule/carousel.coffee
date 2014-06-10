@@ -1,3 +1,13 @@
+###
+@TODO
+
+@namespace Atoms.Molecule
+@class Carousel
+
+@author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+###
+"use strict"
+
 ATTRIBUTES =
   TRANSITION  : "data-carousel-transition"
   POSITION    : "data-carousel-position"
@@ -15,19 +25,25 @@ RESISTANCE = 5
 
 class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
 
+  @extends  : true
+
   @template : """<div {{#if.style}}class="{{style}}"{{/if.style}}></div>"""
 
   @available: ["Atom.Figure", "Atom.Image", "Atom.Video"]
 
   @base     : "Form"
 
+  @events   : ["start", "change", "end"]
+
   constructor: ->
     super
     do @initialize
-    @el.bind("touchstart", @_onStart)
-      .bind("swiping", @_onSwiping)
-      .bind("touchend", @_onEnd)
-      .bind("webkitTransitionEnd", @_onTransitionEnd)
+    @el
+      .bind "touchstart", @_onStart
+      .bind "swiping", @_onSwiping
+      .bind "touchend", @_onEnd
+      .bind "webkitTransitionEnd", @_onTransitionEnd
+      .bind "transitionend", @_onTransitionEnd
 
   clean: ->
     @destroyChildren()
@@ -46,6 +62,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
         @index.add index, index is 1
     if @attributes.interval and @children.length > 2
       @_interval = setTimeout @next, @attributes.interval
+    @bubble "start", {}
 
   next: =>
     if @_canMove(true)
@@ -56,6 +73,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       @children[1].el.attr(ATTRIBUTES.TRANSITION, "current")
       @children[@_total_childs].el.attr(ATTRIBUTES.TRANSITION, "next")
       @_index = 1
+      @bubble "end", {}
 
   previous: =>
     if @_canMove(false)
@@ -121,6 +139,7 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     _removeTransform(@children[@_index].el[0])
     @children[future_index].el.attr(ATTRIBUTES.TRANSITION, TRANSITION.CURRENT)
     @_index = future_index
+    @bubble "change", index: @_index
 
   _onTransitionEnd: (e) =>
     child = e.target
