@@ -1,7 +1,7 @@
 @import "../../../style/__vendor.styl"
 
-TRANSITION_FUNCTION = ease-out
-TRANSITION_TIME     = 300ms
+TRANSITION_EASE = ease-out
+TRANSITION_TIME = 250ms
 
 [data-molecule=form][data-extend=carousel]
   margin: 0
@@ -52,7 +52,7 @@ TRANSITION_TIME     = 300ms
       visibility: hidden
 
     &[data-carousel-transition]
-      vendor(transition, all TRANSITION_TIME TRANSITION_FUNCTION)
+      vendor(transition, all TRANSITION_TIME TRANSITION_EASE)
 
     &[data-carousel-transition="restoring"]
       vendor(transform, translateX(0))

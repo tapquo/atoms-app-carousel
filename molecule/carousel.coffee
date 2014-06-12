@@ -29,21 +29,22 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
 
   @template : """<div {{#if.style}}class="{{style}}"{{/if.style}}></div>"""
 
-  @available: ["Atom.Figure", "Atom.Image", "Atom.Video"]
+  @available: ["Atom.Figure", "Atom.Image", "Atom.Video", "Molecule.Div"]
 
   @base     : "Form"
 
-  @events   : ["start", "change", "end"]
+  @events   : ["swipe", "start", "change", "end"]
 
   constructor: ->
     super
     do @initialize
-    @el
-      .bind "touchstart", @_onStart
-      .bind "swiping", @_onSwiping
-      .bind "touchend", @_onEnd
-      .bind "webkitTransitionEnd", @_onTransitionEnd
-      .bind "transitionend", @_onTransitionEnd
+    if "swipe" in (@attributes.events or [])
+      @el
+        .bind "touchstart", @_onStart
+        .bind "swiping", @_onSwiping
+        .bind "touchend", @_onEnd
+        .bind "webkitTransitionEnd", @_onTransitionEnd
+        .bind "transitionend", @_onTransitionEnd
 
   clean: ->
     @destroyChildren()
