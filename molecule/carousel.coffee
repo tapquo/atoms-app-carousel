@@ -39,12 +39,11 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
     super
     do @initialize
     if "swipe" in (@attributes.events or [])
-      @el
-        .bind "touchstart", @_onStart
-        .bind "swiping", @_onSwiping
-        .bind "touchend", @_onEnd
-        .bind "webkitTransitionEnd", @_onTransitionEnd
-        .bind "transitionend", @_onTransitionEnd
+      @el.bind "touchstart", @_onStart
+      @el.bind "swiping", @_onSwiping
+      @el.bind "touchend", @_onEnd
+    @el.bind "webkitTransitionEnd", @_onTransitionEnd
+    @el.bind "transitionend", @_onTransitionEnd
 
   clean: ->
     @destroyChildren()
@@ -81,19 +80,19 @@ class Atoms.Molecule.Carousel extends Atoms.Class.Molecule
       @_move next = false
       @blocked = true
 
-  _onStart: (evt) =>
+  _onStart: =>
     return if @blocked
     @swiped = 0
 
-  _onSwiping: (evt) =>
+  _onSwiping: (event) =>
     if @swiped isnt null
-      @swiped = evt.quoData.delta.x
+      @swiped = event.touch.delta.x
       do @_handleSwipe
       clearTimeout @_interval if @attributes.interval
-    evt.originalEvent.preventDefault()
-    evt.stopPropagation()
+    event.originalEvent.preventDefault()
+    event.stopPropagation()
 
-  _onEnd: (evt) =>
+  _onEnd: =>
     return if @swiped is null
     absPx = Math.abs(@swiped)
     if absPx > 0
