@@ -3,7 +3,7 @@
 TRANSITION_EASE = cubic-bezier(0.645, 0.045, 0.355, 1.000)
 TRANSITION_TIME = 450ms
 
-[data-molecule=form][data-extend=carousel]
+[data-molecule-form=carousel]
   margin: 0
   padding: 0
   width: 100%
@@ -19,14 +19,13 @@ TRANSITION_TIME = 450ms
   &:not(.big):not(.small):not(.tiny)
     height: 12rem
 
-  & > [data-atom="index"]
+  & > [data-atom-index]
     z-index: 2
     position: absolute
     bottom: 0px
     width: 100%
     padding: .2rem 0
     text-align: center
-
     & > span
       position: relative
       display: inline-block
@@ -39,7 +38,7 @@ TRANSITION_TIME = 450ms
       &.active
         opacity: 1
 
-  & > *:not([data-atom="index"])
+  & > :not([data-atom-index])
     margin: 0
     padding: 0
     position: absolute
