@@ -1,0 +1,13 @@
+{
+  "name": "atoms-app-carousel",
+  "version": "1.0.0",
+  "main": "atoms.app.carousel.js",
+  "homepage": "http://atoms.tapquo.com",
+  "license": "MIT",
+  "authors": [
+    "Javi Jimenez", "Javi Jimenez <javi@tapquo.com>"],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tapquo/atoms-app-carousel.git"
+  }
+}
