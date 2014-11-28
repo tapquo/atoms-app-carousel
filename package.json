@@ -1,0 +1,22 @@
+{
+  "name"            : "atoms.app.carousel",
+  "version"         : "1.0.0",
+  "description"     : "",
+  "homepage"        : "http://tapquo.com",
+  "author"          : "Tapquo S.L.",
+  "dependencies": {
+    "coffee-script": "^1.8.0"
+  },
+  "devDependencies" : {
+    "gulp"        : "*",
+    "gulp-coffee" : "*",
+    "gulp-concat" : "*",
+    "gulp-connect": "*",
+    "gulp-flatten": "*",
+    "gulp-header" : "*",
+    "gulp-stylus" : "*",
+    "gulp-uglify" : "*",
+    "gulp-util"   : "*"
+  },
+  "engines"         : { "node": "*"}
+}
